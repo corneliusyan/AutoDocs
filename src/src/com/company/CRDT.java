@@ -24,14 +24,14 @@ public class CRDT {
     }
 
     public void localInsert(char value, int index) {
-        System.out.println("\n\nLocal Insert");
-        System.out.println("Val = " + value + ", Index = " + index);
         Char curChar = this.generateChar(value, index);
         this.struct.add(index, curChar);
+        printString();
     }
 
     public void localDelete(int index) {
-        this.struct.remove(index);
+        this.struct.remove(index-1);
+        printString();
     }
 
     public Char generateChar(char value, int index) {
@@ -41,7 +41,6 @@ public class CRDT {
         } else {
             posBefore = new ArrayList<Identifier>();
         }
-        System.out.println("> posBefore = " + posBefore);
 
         List<Identifier> posAfter;
         if (((index + 1) >= 0) && ((index + 1) < this.struct.size())) {
@@ -49,11 +48,9 @@ public class CRDT {
         } else {
             posAfter = new ArrayList<Identifier>();
         }
-        System.out.println("> posAfter = " + posAfter);
 
         List<Identifier> newPos = new ArrayList<Identifier>();
         this.generatePosBetween(posBefore, posAfter, newPos, 0);
-        System.out.println("> newPos   = " + newPos);
         return new Char(value, newPos, this.siteId);
     }
 
@@ -61,7 +58,6 @@ public class CRDT {
                                    List<Identifier> posAfter,
                                    List<Identifier> newPos,
                                    int level) {
-        System.out.println(">> level = " + level);
         int base = (int) Math.pow(2, level) * this.base;
         char boundaryStrategy = this.retrieveStrategy(level);
 
@@ -141,7 +137,6 @@ public class CRDT {
             }
         }
         int idBetween = (int) Math.floor(Math.random() * (max - min)) + min;
-        System.out.println(">> idBetween = " + idBetween);
         return idBetween;
     }
 

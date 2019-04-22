@@ -7,6 +7,5 @@ public class Main {
         Controller controller = new Controller();
         controller.start();
 
-        System.out.println("\n\nProgram Finish");
     }
 }

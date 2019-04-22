@@ -10,7 +10,8 @@ public class Controller implements TextEditorListener {
     public Controller() {
         siteId = "ci papi";
         crdt = new CRDT(siteId);
-        textEditor = new TextEditor();
+        textEditor = new TextEditor(400, 400);
+        textEditor.setTextEditorListener(this);
         messenger = new Messenger();
     }
 
@@ -26,8 +27,6 @@ public class Controller implements TextEditorListener {
 
 
     public void start() {
-        for (int i = 0; i < 100; i++) {
-            crdt.localInsert('a', 0);
-        }
+        textEditor.show();
     }
 }
