@@ -1,2 +1,5 @@
 *.class
 .vscode/
+src/.idea
+.DS_Store
+src/out
