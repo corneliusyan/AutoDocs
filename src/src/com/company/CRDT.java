@@ -29,7 +29,7 @@ public class CRDT {
     public Char localInsert(char value, int index) {
         Char curChar = this.generateChar(value, index);
         this.struct.add(index, curChar);
-//        printString();
+        printString();
         return curChar;
     }
 
@@ -64,9 +64,30 @@ public class CRDT {
         return 0; // hrsna ga ke sini dongg
     }
 
-    public void localDelete(int index) {
-        this.struct.remove(index-1);
+    public Char localDelete(int index) {
+        Char c = this.struct.get(index - 1);
+        this.struct.remove(index-1); // karena dari editor, makanya index - 1
         printString();
+        return c;
+    }
+
+    public void remoteDelete(Char c) {
+        int index = this.findPosition(c);
+        if (index == -1) {
+            System.out.println("no matching index found");
+            return;
+        }
+        this.struct.remove(index);
+        printString();
+    }
+
+    public int findPosition(Char c) {
+        for (int i = 0; i < this.struct.size(); i++) {
+            if (c.compareTo(this.struct.get(i)) == 0) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public Char generateChar(char value, int index) {

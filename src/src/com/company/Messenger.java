@@ -27,7 +27,7 @@ public class Messenger {
         this.controller = controller;
         this.peerList = new ArrayList<String>();
         this.peerList.add("ws://localhost:9000");
-//        this.peerList.add("ws://localhost:9001");
+        this.peerList.add("ws://localhost:9001");
 //        this.peerList.add("ws://localhost:9002");
         this.peerList.remove(this.serverAddress);
         this.connectedPeerList = new ArrayList<String>();

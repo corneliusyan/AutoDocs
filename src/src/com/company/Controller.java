@@ -23,12 +23,13 @@ public class Controller implements TextEditorListener, MessengerListener {
     @Override
     public void onInsert(char value, int index) {
         Char c = crdt.localInsert(value, index);
-//        this.messenger.broadcastInsert(c, 0);
+        this.messenger.broadcastInsert(c, 0);
     }
 
     @Override
     public void onDelete(int index) {
-        crdt.localDelete(index);
+        Char c = crdt.localDelete(index);
+        this.messenger.broadcastDelete(c, 0);
     }
 
     public void insertToTextEditor(char value, int index) {
@@ -46,6 +47,7 @@ public class Controller implements TextEditorListener, MessengerListener {
     @Override
     public void handleRemoteDelete(Char c, int count) {
         System.out.println("C O N T R O L L E R ===> handleRemoteDelete");
+        this.crdt.remoteDelete(c);
     }
 
 

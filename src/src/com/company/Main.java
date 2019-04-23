@@ -5,7 +5,7 @@ public class Main {
         System.out.println("Program Start");
 
         String host = "localhost";
-        int port = 9000;
+        int port = 9001;
 
         Controller controller = new Controller(host, port);
         controller.start();

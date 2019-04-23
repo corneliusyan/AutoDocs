@@ -1,5 +1,7 @@
 package com.company;
 
+import javafx.scene.input.KeyCode;
+
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -25,6 +27,7 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
         textArea.addCaretListener(this);
+        textArea.addKeyListener(this);
         textArea.getDocument().addDocumentListener(this);
         addKeyListener(this);
         panel.add(textArea);
@@ -55,21 +58,23 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
 
     @Override
     public void insertUpdate(DocumentEvent e) {
-        System.out.println("TEXT EDITOR HUYU - insertUpdate");
+//        System.out.println("TEXT EDITOR HUYU - insertUpdate");
 //        char value = textArea.getText().charAt(cursorPos);
-        char value = '\0';
-        try {
-            value = e.getDocument().getText(e.getOffset(), 1).charAt(0);
-        } catch (BadLocationException ex) {
-
-        }
-
-        controller.onInsert(value, e.getOffset());
+//        char value = '\0';
+//        try {
+//            value = e.getDocument().getText(e.getOffset(), 1).charAt(0);
+//        } catch (BadLocationException ex) {
+//
+//        }
+//
+//        controller.onInsert(value, e.getOffset());
     }
 
     @Override
     public void removeUpdate(DocumentEvent e) {
-        controller.onDelete(cursorPos);
+
+
+//        controller.onDelete(cursorPos);
     }
 
     @Override
@@ -77,20 +82,25 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
     }
 
     public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+            controller.onDelete(this.getCursorPos());
+        } else if (e.getKeyCode() != KeyEvent.VK_UP &&
+                e.getKeyCode() != KeyEvent.VK_DOWN &&
+                e.getKeyCode() != KeyEvent.VK_LEFT &&
+                e.getKeyCode() != KeyEvent.VK_RIGHT) {
+            char value = '\0';
+            value = e.getKeyChar();
+            controller.onInsert(value, this.getCursorPos());
+        }
         System.out.println("keyPressed");
     }
 
     public void keyReleased(KeyEvent e) {
-        System.out.println("==========================");
-        System.out.println("keyReleased");
-        System.out.println("==========================");
-
+        // pass
     }
 
     public void keyTyped(KeyEvent e) {
-        System.out.println("==========================");
-        System.out.println("keyTyped");
-        System.out.println("==========================");
+        // pass
     }
 
 
