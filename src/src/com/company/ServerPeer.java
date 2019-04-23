@@ -9,13 +9,14 @@ import org.java_websocket.server.WebSocketServer;
 import java.net.InetSocketAddress;
 
 public class ServerPeer extends WebSocketServer {
-
+    private Messenger messenger;
     private String webSocketAddress;
     private Gson gson = new Gson();
 
-    public ServerPeer(InetSocketAddress address) {
+    public ServerPeer(InetSocketAddress address, Messenger messenger) {
         super(address);
         this.webSocketAddress = "ws://" + address.getHostName() + ":" + address.getPort();
+        this.messenger = messenger;
     }
 
     @Override
@@ -31,6 +32,14 @@ public class ServerPeer extends WebSocketServer {
     @Override
     public void onMessage(WebSocket conn, String message) {
         System.out.println("Received message from "	+ conn.getRemoteSocketAddress() + ": " + message);
+        Operation op = this.gson.fromJson(message, Operation.class);
+        if (op.getType().equals("insert")) {
+            System.out.println("onMessage --> INSERT");
+            this.messenger.handleRemoteInsert(op.getData());
+        } else if (op.getType().equals("delete")) {
+            System.out.println("onMessage --> DELETE");
+            this.messenger.handleRemoteDelete(op.getData(), op.getSiteId());
+        }
     }
 
     @Override

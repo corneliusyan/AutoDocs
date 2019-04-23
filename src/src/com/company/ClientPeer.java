@@ -37,7 +37,8 @@ public class ClientPeer extends WebSocketClient {
 
     @Override
     public void onError(Exception ex) {
-        System.err.println("an error occurred:" + ex);
+//        System.err.println("an error occurred:" + ex);
+        System.err.println("an error occurred:");
     }
 
 
