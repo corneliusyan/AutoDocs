@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.concurrent.TimeUnit;
+
 public class Controller implements TextEditorListener {
 
     private CRDT crdt;
@@ -25,8 +27,24 @@ public class Controller implements TextEditorListener {
         crdt.localDelete(index);
     }
 
+    public void insertToTextEditor(String value, int index) {
+        textEditor.getTextArea().insert(value, index);
+        int curPos = textEditor.getCursorPos();
+        textEditor.getTextArea().setCaretPosition(curPos + 1);
+    }
+
 
     public void start() {
         textEditor.show();
+//        for (int i = 1; i <= 5; i++) {
+//            try {
+//                TimeUnit.SECONDS.sleep(1);
+//                insertToTextEditor(Integer.toString(i), i);
+//
+//            } catch (InterruptedException ex) {
+//
+//            }
+//        }
+
     }
 }

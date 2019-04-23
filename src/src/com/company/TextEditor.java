@@ -5,6 +5,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.awt.*;
 
@@ -12,7 +13,6 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
     private JFrame frame;
     private JTextArea textArea;
     private JPanel panel;
-
     private TextEditorListener controller;
 
     private int cursorPos;
@@ -37,6 +37,14 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
         frame.show();
     }
 
+    public JTextArea getTextArea() {
+        return textArea;
+    }
+
+    public int getCursorPos() {
+        return cursorPos;
+    }
+
     @Override
     public void caretUpdate(CaretEvent e) {
         cursorPos = e.getDot();
@@ -44,8 +52,15 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
 
     @Override
     public void insertUpdate(DocumentEvent e) {
-        char value = textArea.getText().charAt(cursorPos);
-        controller.onInsert(value, cursorPos);
+//        char value = textArea.getText().charAt(cursorPos);
+        char value = '\0';
+        try {
+            value = e.getDocument().getText(e.getOffset(), 1).charAt(0);
+        } catch (BadLocationException ex) {
+
+        }
+
+        controller.onInsert(value, e.getOffset());
     }
 
     @Override
@@ -56,4 +71,5 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
     @Override
     public void changedUpdate(DocumentEvent e) {
     }
+
 }
