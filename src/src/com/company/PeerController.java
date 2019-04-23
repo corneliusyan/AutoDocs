@@ -13,6 +13,8 @@ public class PeerController {
     private ServerPeer serverPeer;
     private String serverAddress;
 
+    private Messenger messenger;
+
     public PeerController() {
         this.peerList = new ArrayList<String>();
         this.connectedPeerList = new ArrayList<String>();
@@ -35,7 +37,7 @@ public class PeerController {
     }
 
     public void startServerPeer(String host, int port) {
-        this.setServerPeer(new ServerPeer(new InetSocketAddress(host, port)));
+        this.setServerPeer(new ServerPeer(new InetSocketAddress(host, port), this.messenger));
         this.serverPeer.start();
     }
 
@@ -60,7 +62,7 @@ public class PeerController {
             for (String peer : this.peerList) {
                 if (!this.connectedPeerList.contains(peer)) {
                     try {
-                        ClientPeer peerNode = new ClientPeer(new URI(peer), peer);
+                        ClientPeer peerNode = new ClientPeer(new URI(peer), peer, this.messenger);
                         boolean isSucceeded = peerNode.connectBlocking();
                         if (isSucceeded) {
                             this.connectedPeerList.add(peer);
@@ -95,24 +97,24 @@ public class PeerController {
         peers.remove("ws://localhost:" + port);
         return peers;
     }
-
-    public static void main(String[] args) {
-        PeerController controller = new PeerController();
-
-        // Start server peer
-        String host = "localhost";
-        int port = 9002;
-        controller.setServerAddress("ws://" + host + ":" + port);
-        controller.startServerPeer(host, port);
-
-        // Start client peer
-        System.out.println("Connecting to peers...");
-        List<String> peers = new ArrayList<String>();
-        controller.setPeerList(controller.generatePeers(port));
-
-        controller.startClientPeers();
-        // Test p2p connection
-        System.out.println("Say Hello!!!!!!");
-        controller.sayHello();
-    }
+//
+//    public static void main(String[] args) {
+//        PeerController controller = new PeerController();
+//
+//        // Start server peer
+//        String host = "localhost";
+//        int port = 9002;
+//        controller.setServerAddress("ws://" + host + ":" + port);
+//        controller.startServerPeer(host, port);
+//
+//        // Start client peer
+//        System.out.println("Connecting to peers...");
+//        List<String> peers = new ArrayList<String>();
+//        controller.setPeerList(controller.generatePeers(port));
+//
+//        controller.startClientPeers();
+//        // Test p2p connection
+//        System.out.println("Say Hello!!!!!!");
+//        controller.sayHello();
+//    }
 }

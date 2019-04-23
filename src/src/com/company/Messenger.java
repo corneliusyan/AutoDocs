@@ -16,7 +16,6 @@ public class Messenger {
     private String host;
     private int port;
     private String serverAddress;
-    private String serverAddress;
 
     private ServerPeer serverPeer;
     private Gson gson;
@@ -27,6 +26,10 @@ public class Messenger {
         this.serverAddress = "ws://" + this.host + ":" + this.port;
         this.controller = controller;
         this.peerList = new ArrayList<String>();
+        this.peerList.add("ws://localhost:9000");
+//        this.peerList.add("ws://localhost:9001");
+//        this.peerList.add("ws://localhost:9002");
+        this.peerList.remove(this.serverAddress);
         this.connectedPeerList = new ArrayList<String>();
         this.gson = new Gson();
 
@@ -46,10 +49,13 @@ public class Messenger {
     }
 
     public void init() {
+        System.out.println("INITTTT COYYY");
         // Initialize server peer
+        System.out.println("INITTTT 2");
         this.startServerPeer();
 
         // Initialize client peers
+        System.out.println("INITTTT 3");
         this.startClientPeers();
     }
 
@@ -59,11 +65,12 @@ public class Messenger {
     }
 
     public void startClientPeers() {
-        while (this.connectedPeerList.size() < (this.peerList.size() - 1)) {
+        System.out.println("MESSENGER - startClientPeers");
+        while (this.connectedPeerList.size() < (this.peerList.size())) {
             for (String peer : this.peerList) {
                 if (!this.connectedPeerList.contains(peer)) {
                     try {
-                        ClientPeer peerNode = new ClientPeer(new URI(peer), peer);
+                        ClientPeer peerNode = new ClientPeer(new URI(peer), peer, this);
                         boolean isSucceeded = peerNode.connectBlocking();
                         if (isSucceeded) {
                             this.connectedPeerList.add(peer);
@@ -75,7 +82,7 @@ public class Messenger {
                     }
                 }
             }
-            if (this.connectedPeerList.size() < (this.peerList.size() - 1)) {
+            if (this.connectedPeerList.size() < (this.peerList.size())) {
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -102,11 +109,13 @@ public class Messenger {
         this.serverPeer.broadcast(payload);
     }
 
-    public void handleRemoteInsert(Char data) {
+    public void handleRemoteInsert(Char data, int count) {
         System.out.println("[MESSENGER] HANDLE REMOTE INSERT");
+        this.controller.handleRemoteInsert(data, count);
     }
 
-    public void handleRemoteDelete(Char data, String siteId) {
+    public void handleRemoteDelete(Char data, int count) {
         System.out.println("[MESSENGER] HANDLE REMOTE DELETE");
+        this.controller.handleRemoteDelete(data, count);
     }
 }

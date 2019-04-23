@@ -4,7 +4,10 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Program Start");
 
-        Controller controller = new Controller();
+        String host = "localhost";
+        int port = 9000;
+
+        Controller controller = new Controller(host, port);
         controller.start();
 
     }

@@ -35,10 +35,10 @@ public class ServerPeer extends WebSocketServer {
         Operation op = this.gson.fromJson(message, Operation.class);
         if (op.getType().equals("insert")) {
             System.out.println("onMessage --> INSERT");
-            this.messenger.handleRemoteInsert(op.getData());
+            this.messenger.handleRemoteInsert(op.getData(), 0);
         } else if (op.getType().equals("delete")) {
             System.out.println("onMessage --> DELETE");
-            this.messenger.handleRemoteDelete(op.getData(), op.getSiteId());
+            this.messenger.handleRemoteDelete(op.getData(), 0);
         }
     }
 

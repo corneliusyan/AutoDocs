@@ -4,21 +4,26 @@ import java.util.concurrent.TimeUnit;
 
 public class Controller implements TextEditorListener, MessengerListener {
 
+    private String host;
+    private int port;
+
     private CRDT crdt;
     private String siteId;
     private TextEditor textEditor;
     private Messenger messenger;
 
-    public Controller() {
-        siteId = "ci papi";
-        crdt = new CRDT(siteId);
+    public Controller(String host, int port) {
+        siteId = "ws://" + host + ":" + port;
+        crdt = new CRDT(siteId, this);
         textEditor = new TextEditor(400, 400);
         textEditor.setTextEditorListener(this);
+        messenger = new Messenger(host, port, this);
     }
 
     @Override
     public void onInsert(char value, int index) {
-        crdt.localInsert(value, index);
+        Char c = crdt.localInsert(value, index);
+//        this.messenger.broadcastInsert(c, 0);
     }
 
     @Override
@@ -26,20 +31,21 @@ public class Controller implements TextEditorListener, MessengerListener {
         crdt.localDelete(index);
     }
 
-    public void insertToTextEditor(String value, int index) {
-        textEditor.getTextArea().insert(value, index);
+    public void insertToTextEditor(char value, int index) {
+        textEditor.getTextArea().insert(String.valueOf(value), index);
         int curPos = textEditor.getCursorPos();
         textEditor.getTextArea().setCaretPosition(curPos + 1);
     }
 
     @Override
-    public void handleRemoteInsert(Char c) {
-
+    public void handleRemoteInsert(Char c, int count) {
+        System.out.println("C O N T R O L L E R ===> handleRemoteInsert");
+        this.crdt.remoteInsert(c);
     }
 
     @Override
     public void handleRemoteDelete(Char c, int count) {
-
+        System.out.println("C O N T R O L L E R ===> handleRemoteDelete");
     }
 
 

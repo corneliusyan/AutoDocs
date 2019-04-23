@@ -8,25 +8,60 @@ public class CRDT {
     private int boundary;
     private String siteId;
     private List<Char> struct;
+    private Controller controller;
 
-    public CRDT(String siteId) {
+    public CRDT(String siteId, Controller controller) {
         this.siteId = siteId;
         this.base = 32;
         this.boundary = 10;
         this.struct = new ArrayList<Char>();
+        this.controller = controller;
     }
 
-    public CRDT(String siteId, int base, int boundary) {
+    public CRDT(String siteId, int base, int boundary, Controller controller) {
         this.siteId = siteId;
         this.base = base;
         this.boundary = boundary;
         this.struct = new ArrayList<Char>();
+        this.controller = controller;
     }
 
-    public void localInsert(char value, int index) {
+    public Char localInsert(char value, int index) {
         Char curChar = this.generateChar(value, index);
         this.struct.add(index, curChar);
-        printString();
+//        printString();
+        return curChar;
+    }
+
+    public void remoteInsert(Char c) {
+        int index = this.findInsertPosition(c);
+        this.struct.add(index, c);
+//        printString();
+        this.controller.insertToTextEditor(c.getValue(), index);
+    }
+
+    public int findInsertPosition(Char c) {
+        int minIndex = 0;
+        int maxIndex = this.struct.size() - 1;
+        if (this.struct.size() == 0 || c.compareTo(this.struct.get(0)) <= 0) {
+            return 0;
+        }
+        Char lastChar = this.struct.get(maxIndex);
+        if (c.compareTo(lastChar) > 0) {
+            return this.struct.size();
+        }
+        for (int i = 1; i < (this.struct.size() - 1); i++) {
+            Char leftChar = this.struct.get(i - 1);
+            Char rightChar = this.struct.get(i + 1);
+            if (c.compareTo(rightChar) == 0) {
+                return i;
+            }
+            if ((c.compareTo(leftChar) > 0) && (c.compareTo(rightChar) < 0)) {
+                return i;
+            }
+        }
+        // u stoopid
+        return 0; // hrsna ga ke sini dongg
     }
 
     public void localDelete(int index) {

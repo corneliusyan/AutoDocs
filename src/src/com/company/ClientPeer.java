@@ -10,10 +10,12 @@ public class ClientPeer extends WebSocketClient {
 
     private Gson gson = new Gson();
     private String serverAddress;
+    private Messenger messenger;
 
-    public ClientPeer(URI serverURI, String serverAddress) {
+    public ClientPeer(URI serverURI, String serverAddress, Messenger messenger) {
         super(serverURI);
         this.serverAddress = serverAddress;
+        this.messenger = messenger;
     }
 
     @Override
@@ -32,7 +34,15 @@ public class ClientPeer extends WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        System.out.println("received message: " + message);
+        System.out.println("CLIENT received message: " + message);
+        Operation op = this.gson.fromJson(message, Operation.class);
+        if (op.getType().equals("insert")) {
+            System.out.println("onMessage --> INSERT");
+            this.messenger.handleRemoteInsert(op.getData(), 0);
+        } else if (op.getType().equals("delete")) {
+            System.out.println("onMessage --> DELETE");
+            this.messenger.handleRemoteDelete(op.getData(), 0);
+        }
     }
 
     @Override

@@ -8,8 +8,10 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
-public class TextEditor extends JFrame implements CaretListener, DocumentListener {
+public class TextEditor extends JFrame implements CaretListener, DocumentListener, KeyListener {
     private JFrame frame;
     private JTextArea textArea;
     private JPanel panel;
@@ -24,6 +26,7 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
         panel.setLayout(new BorderLayout());
         textArea.addCaretListener(this);
         textArea.getDocument().addDocumentListener(this);
+        addKeyListener(this);
         panel.add(textArea);
         frame.add(panel);
         frame.setSize(width, height);
@@ -52,6 +55,7 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
 
     @Override
     public void insertUpdate(DocumentEvent e) {
+        System.out.println("TEXT EDITOR HUYU - insertUpdate");
 //        char value = textArea.getText().charAt(cursorPos);
         char value = '\0';
         try {
@@ -71,5 +75,23 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
     @Override
     public void changedUpdate(DocumentEvent e) {
     }
+
+    public void keyPressed(KeyEvent e) {
+        System.out.println("keyPressed");
+    }
+
+    public void keyReleased(KeyEvent e) {
+        System.out.println("==========================");
+        System.out.println("keyReleased");
+        System.out.println("==========================");
+
+    }
+
+    public void keyTyped(KeyEvent e) {
+        System.out.println("==========================");
+        System.out.println("keyTyped");
+        System.out.println("==========================");
+    }
+
 
 }
