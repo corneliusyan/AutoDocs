@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Messenger {
-    private Controller controller;
+    private MessengerListener controller;
 
     private List<String> peerList;
     private List<String> connectedPeerList;
@@ -21,7 +21,7 @@ public class Messenger {
     private ServerPeer serverPeer;
     private Gson gson;
 
-    public Messenger(String host, int port, Controller controller) {
+    public Messenger(String host, int port, MessengerListener controller) {
         this.host = host;
         this.port = port;
         this.serverAddress = "ws://" + this.host + ":" + this.port;
@@ -33,7 +33,7 @@ public class Messenger {
         this.init();
     }
 
-    public Messenger(String host, int port, Controller controller, List<String> peerList) {
+    public Messenger(String host, int port, MessengerListener controller, List<String> peerList) {
         this.host = host;
         this.port = port;
         this.serverAddress = "ws://" + this.host + ":" + this.port;

@@ -2,7 +2,7 @@ package com.company;
 
 import java.util.concurrent.TimeUnit;
 
-public class Controller implements TextEditorListener {
+public class Controller implements TextEditorListener, MessengerListener {
 
     private CRDT crdt;
     private String siteId;
@@ -14,7 +14,6 @@ public class Controller implements TextEditorListener {
         crdt = new CRDT(siteId);
         textEditor = new TextEditor(400, 400);
         textEditor.setTextEditorListener(this);
-        messenger = new Messenger();
     }
 
     @Override
@@ -31,6 +30,16 @@ public class Controller implements TextEditorListener {
         textEditor.getTextArea().insert(value, index);
         int curPos = textEditor.getCursorPos();
         textEditor.getTextArea().setCaretPosition(curPos + 1);
+    }
+
+    @Override
+    public void handleRemoteInsert(Char c) {
+
+    }
+
+    @Override
+    public void handleRemoteDelete(Char c, int count) {
+
     }
 
 
