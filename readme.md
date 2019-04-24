@@ -6,9 +6,9 @@ make run
 Lalu, masukkan host, port, jumlah peer, dan alamat untuk peer lain yang terhubung
 
 # Pembagian Tugas
-13516041 (33%): VersionVector, DeletionBuffer, Debugging, Laporan
-13516113 (33%): TextEditor, Controller, Debugging, Laporan
-13516116 (33%): CRDT, Networking, Debugging, Laporan
+13516041 (33%): VersionVector, DeletionBuffer, Debugging, Laporan  
+13516113 (33%): TextEditor, Controller, Debugging, Laporan  
+13516116 (33%): CRDT, Networking, Debugging, Laporan  
 
 # Cara Kerja Program
 Pertama-tama program akan menjalankan sebuah commandline untuk setup peer. Kemudian, akan dibuat sebuah controller untuk masing-masing peer.
@@ -35,8 +35,8 @@ DeletionBuffer digunakan sebagai tempat penyimpanan perintah delete yang belum m
 # Test Case
 ## Test Case #1: Test local insert
 Input:
-1. Peer 1 mengetikkan 'd' dan 'e' berurutan
-2. Peer 1 mengetikkan 'a' dan 'b' berurutan sebelum huruf 'd'
+1. Peer 1 mengetikkan 'c' dan 'd' berurutan
+2. Peer 1 mengetikkan 'a' dan 'b' berurutan sebelum huruf 'c'
 
 Output:
 ```
@@ -46,10 +46,7 @@ abcd
 ## Test Case #2: Test local delete
 Input:
 1. Peer 1 mengetikkan 'abcd'
-2. Peer 1 menghapus 'd'
-3. Peer 1 menghapus 'b'
-4. Peer 1 menghapus 'a'
-5. Peer 1 menghapus 'c'
+2. Peer 1 menghapus 'd', 'b', 'a', dan 'c' berurutan
 
 Output:
 ```
