@@ -36,11 +36,17 @@ public class Controller implements TextEditorListener, MessengerListener {
     public void insertToTextEditor(char value, int index) {
         textEditor.getTextArea().insert(String.valueOf(value), index);
         int curPos = textEditor.getCursorPos();
-        textEditor.getTextArea().setCaretPosition(curPos + 1);
+        if (index <= curPos) {
+            textEditor.getTextArea().setCaretPosition(curPos + 1);
+        }
     }
 
     public void deleteToTextEditor(int index) {
-        textEditor.getTextArea().replaceRange("", index, index+1);
+        textEditor.getTextArea().replaceRange("", index, index + 1);
+        int curPos = textEditor.getCursorPos();
+        if (index <= curPos) {
+            textEditor.getTextArea().setCaretPosition(curPos - 1);
+        }
     }
 
     @Override
