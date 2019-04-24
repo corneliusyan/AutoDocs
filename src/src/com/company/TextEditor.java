@@ -22,7 +22,7 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
     private int cursorPos;
 
     public TextEditor(int width, int height) {
-        frame = new JFrame("Peer to Peer Text Editor with CRDT");
+        frame = new JFrame("Peer to Peer Collaborative Text Editor with CRDT");
         textArea = new JTextArea();
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -59,23 +59,10 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
 
     @Override
     public void insertUpdate(DocumentEvent e) {
-//        System.out.println("TEXT EDITOR HUYU - insertUpdate");
-//        char value = textArea.getText().charAt(cursorPos);
-//        char value = '\0';
-//        try {
-//            value = e.getDocument().getText(e.getOffset(), 1).charAt(0);
-//        } catch (BadLocationException ex) {
-//
-//        }
-//
-//        controller.onInsert(value, e.getOffset());
     }
 
     @Override
     public void removeUpdate(DocumentEvent e) {
-
-
-//        controller.onDelete(cursorPos);
     }
 
     @Override
@@ -88,7 +75,17 @@ public class TextEditor extends JFrame implements CaretListener, DocumentListene
         } else if (e.getKeyCode() != KeyEvent.VK_UP &&
                 e.getKeyCode() != KeyEvent.VK_DOWN &&
                 e.getKeyCode() != KeyEvent.VK_LEFT &&
-                e.getKeyCode() != KeyEvent.VK_RIGHT) {
+                e.getKeyCode() != KeyEvent.VK_RIGHT &&
+                e.getKeyCode() != KeyEvent.VK_TAB &&
+                e.getKeyCode() != KeyEvent.VK_ALT &&
+                e.getKeyCode() != KeyEvent.VK_SHIFT &&
+                e.getKeyCode() != KeyEvent.VK_CANCEL &&
+                e.getKeyCode() != KeyEvent.VK_CONTROL &&
+                e.getKeyCode() != KeyEvent.VK_CAPS_LOCK &&
+                e.getKeyCode() != KeyEvent.VK_ESCAPE &&
+                e.getKeyCode() != KeyEvent.VK_END &&
+                e.getKeyCode() != KeyEvent.VK_HOME
+        ) {
             char value = '\0';
             value = e.getKeyChar();
             controller.onInsert(value, this.getCursorPos());
