@@ -9,6 +9,7 @@ public class CRDT {
     private String siteId;
     private List<Char> struct;
     private Controller controller;
+    private VersionVector versionVector;
 
     public CRDT(String siteId, Controller controller) {
         this.siteId = siteId;
@@ -16,6 +17,7 @@ public class CRDT {
         this.boundary = 10;
         this.struct = new ArrayList<Char>();
         this.controller = controller;
+        this.versionVector = controller.getVersionVector();
     }
 
     public CRDT(String siteId, int base, int boundary, Controller controller) {
@@ -24,19 +26,37 @@ public class CRDT {
         this.boundary = boundary;
         this.struct = new ArrayList<Char>();
         this.controller = controller;
+        this.versionVector = controller.getVersionVector();
+    }
+
+    public void printLocation(Char c) {
+        System.out.print("[printLocation] loc = [");
+        List<Identifier> location = c.getPosition();
+        for (int i = 0; i < location.size(); i++) {
+            if (i > 0) {
+                System.out.print(", ");
+            }
+            System.out.print(location.get(i).getDigit());
+        }
+        System.out.println("]");
     }
 
     public Char localInsert(char value, int index) {
+        this.versionVector.increment();
         Char curChar = this.generateChar(value, index);
+        System.out.println("[CRDT->localInsert] val = " + value + ", index = " + index);
+        this.printLocation(curChar);
         this.struct.add(index, curChar);
         printString();
         return curChar;
     }
 
     public void remoteInsert(Char c) {
-        int index = this.findInsertPosition(c);
+//        int index = this.findInsertPosition(c);
+        int index = this.findInsertIndex(c);
+        System.out.println("[Remote Insert] val = " + c.getValue() + ", index = " + index);
+        this.printLocation(c);
         this.struct.add(index, c);
-//        printString();
         this.controller.insertToTextEditor(c.getValue(), index);
     }
 
@@ -44,28 +64,73 @@ public class CRDT {
         int minIndex = 0;
         int maxIndex = this.struct.size() - 1;
         if (this.struct.size() == 0 || c.compareTo(this.struct.get(0)) <= 0) {
+            System.out.println("[CRDT->findInsertPosition] index = 0");
             return 0;
         }
         Char lastChar = this.struct.get(maxIndex);
         if (c.compareTo(lastChar) > 0) {
+            System.out.println("[CRDT->findInsertPosition] index = " + this.struct.size());
             return this.struct.size();
         }
         for (int i = 1; i < (this.struct.size() - 1); i++) {
             Char leftChar = this.struct.get(i - 1);
             Char rightChar = this.struct.get(i + 1);
             if (c.compareTo(rightChar) == 0) {
+                System.out.println("[CRDT->findInsertPosition] index = " + i + " (equal to right)");
                 return i;
             }
             if ((c.compareTo(leftChar) > 0) && (c.compareTo(rightChar) < 0)) {
+                System.out.println("[CRDT->findInsertPosition] index = " + i + " (in between)");
                 return i;
             }
         }
         // u stoopid
+        System.out.println("[CRDT->findInsertPosition] ERROR ! ! !");
         return 0; // hrsna ga ke sini dongg
     }
 
+    public int findInsertIndex(Char val) {
+        int left = 0;
+        int right = this.struct.size() - 1;
+
+        if (this.struct.size() == 0 || val.compareTo(this.struct.get(left)) < 1) {
+            return left;
+        } else if (val.compareTo(this.struct.get(right)) > 0) {
+            return this.struct.size();
+        }
+
+        while ((left + 1) < right) {
+            int mid = (int) Math.floor(left + (right - left) / 2);
+            System.out.println("Check Index, i = " + mid);
+            System.out.print(">> mid position -> ");
+            this.printLocation(this.struct.get(mid));
+            int compareNum = val.compareTo(this.struct.get(mid));
+
+            if (compareNum == 0) {
+                System.out.println("Mid match!");
+                return mid;
+            } else if (compareNum > 0) {
+                left = mid;
+            } else {
+                right = mid;
+            }
+        }
+
+        if (val.compareTo(this.struct.get(left)) == 0) {
+            System.out.print(">> FINAL LEFT position -> ");
+            this.printLocation(this.struct.get(left));
+            return left;
+        } else {
+            System.out.print(">> FINAL RIGHT position -> ");
+            this.printLocation(this.struct.get(right));
+            return right;
+        }
+    }
+
     public Char localDelete(int index) {
+        this.versionVector.increment();
         Char c = this.struct.get(index - 1);
+        c.setCounter(this.versionVector.getLocalVersion().getCounter());
         this.struct.remove(index-1); // karena dari editor, makanya index - 1
         printString();
         return c;
@@ -100,21 +165,23 @@ public class CRDT {
         }
 
         List<Identifier> posAfter;
-        if (((index + 1) >= 0) && ((index + 1) < this.struct.size())) {
-            posAfter = this.struct.get(index + 1).getPosition();
+        if (((index) >= 0) && ((index) < this.struct.size())) {
+            posAfter = this.struct.get(index).getPosition();
         } else {
             posAfter = new ArrayList<Identifier>();
         }
 
         List<Identifier> newPos = new ArrayList<Identifier>();
         this.generatePosBetween(posBefore, posAfter, newPos, 0);
-        return new Char(value, newPos, this.siteId);
+        return new Char(value, newPos, this.siteId, this.versionVector.getLocalVersion().getCounter());
     }
 
     public void generatePosBetween(List<Identifier> posBefore,
                                    List<Identifier> posAfter,
                                    List<Identifier> newPos,
                                    int level) {
+        System.out.println("[generatePosBetween] START");
+
         int base = (int) Math.pow(2, level) * this.base;
         char boundaryStrategy = this.retrieveStrategy(level);
 
@@ -131,10 +198,13 @@ public class CRDT {
             idAfter = new Identifier(base, this.siteId);
         }
 
+        System.out.println("[generatePosBetween] idBefore = " + idBefore.getDigit() + ", idAfter = " + idAfter.getDigit());
+
         if ((idAfter.getDigit() - idBefore.getDigit()) > 1) {
             int newDigit = this.generateIdBetween(idBefore.getDigit(),
                     idAfter.getDigit(),
                     boundaryStrategy);
+            System.out.println("[generatePosBetween] newDigit = " + newDigit);
             newPos.add(new Identifier(newDigit, this.siteId));
         } else if ((idAfter.getDigit() - idBefore.getDigit()) == 1) {
             newPos.add(idBefore);

@@ -6,12 +6,13 @@ public class Char implements Comparable<Char> {
     private char value;
     private List<Identifier> position;
     private String siteId;
-    // private int counter;
+    private int counter;
 
-    public Char(char value, List<Identifier> position, String siteId) {
+    public Char(char value, List<Identifier> position, String siteId, int counter) {
         this.value = value;
         this.position = position;
         this.siteId = siteId;
+        this.counter = counter;
     }
 
     public char getValue() {
@@ -61,6 +62,14 @@ public class Char implements Comparable<Char> {
         } else {
             return 0;
         }
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
     }
 }
 

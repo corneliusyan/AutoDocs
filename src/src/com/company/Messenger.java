@@ -94,23 +94,23 @@ public class Messenger {
         this.startClientPeers();
     }
 
-    public void broadcastInsert(Char data, int count) {
-        Operation op = new Operation(data, "insert", this.serverAddress, count);
+    public void broadcastInsert(Char data) {
+        Operation op = new Operation(data, "insert");
         String payload = gson.toJson(op);
         this.serverPeer.broadcast(payload);
     }
 
-    public void broadcastDelete(Char data, int count) {
-        Operation op = new Operation(data, "delete", this.serverAddress, count);
+    public void broadcastDelete(Char data) {
+        Operation op = new Operation(data, "delete");
         String payload = gson.toJson(op);
         this.serverPeer.broadcast(payload);
     }
 
-    public void handleRemoteInsert(Char data, int count) {
-        this.controller.handleRemoteInsert(data, count);
+    public void handleRemoteInsert(Char data) {
+        this.controller.handleRemoteInsert(data);
     }
 
-    public void handleRemoteDelete(Char data, int count) {
-        this.controller.handleRemoteDelete(data, count);
+    public void handleRemoteDelete(Char data) {
+        this.controller.handleRemoteDelete(data);
     }
 }

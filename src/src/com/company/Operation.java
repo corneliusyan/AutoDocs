@@ -3,14 +3,14 @@ package com.company;
 public class Operation {
     private Char data;
     private String type;
-    private String siteId;
-    private int count;
+//    private String siteId;
+//    private int count;
 
-    public Operation(Char data, String type, String siteId, int count) {
+    public Operation(Char data, String type) {
         this.data = data;
         this.type = type;
-        this.siteId = siteId;
-        this.count = count;
+//        this.siteId = siteId;
+//        this.count = count;
     }
 
     public Char getData() {
@@ -29,19 +29,19 @@ public class Operation {
         this.type = type;
     }
 
-    public String getSiteId() {
-        return siteId;
-    }
-
-    public void setSiteId(String siteId) {
-        this.siteId = siteId;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
+//    public String getSiteId() {
+//        return siteId;
+//    }
+//
+//    public void setSiteId(String siteId) {
+//        this.siteId = siteId;
+//    }
+//
+//    public int getCount() {
+//        return count;
+//    }
+//
+//    public void setCount(int count) {
+//        this.count = count;
+//    }
 }
