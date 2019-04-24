@@ -49,13 +49,10 @@ public class Messenger {
     }
 
     public void init() {
-        System.out.println("INITTTT COYYY");
         // Initialize server peer
-        System.out.println("INITTTT 2");
         this.startServerPeer();
 
         // Initialize client peers
-        System.out.println("INITTTT 3");
         this.startClientPeers();
     }
 
@@ -110,12 +107,10 @@ public class Messenger {
     }
 
     public void handleRemoteInsert(Char data, int count) {
-        System.out.println("[MESSENGER] HANDLE REMOTE INSERT");
         this.controller.handleRemoteInsert(data, count);
     }
 
     public void handleRemoteDelete(Char data, int count) {
-        System.out.println("[MESSENGER] HANDLE REMOTE DELETE");
         this.controller.handleRemoteDelete(data, count);
     }
 }

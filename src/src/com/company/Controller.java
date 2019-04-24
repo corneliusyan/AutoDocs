@@ -1,5 +1,6 @@
 package com.company;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Controller implements TextEditorListener, MessengerListener {
@@ -12,12 +13,12 @@ public class Controller implements TextEditorListener, MessengerListener {
     private TextEditor textEditor;
     private Messenger messenger;
 
-    public Controller(String host, int port) {
+    public Controller(String host, int port, List<String> peers) {
         siteId = "ws://" + host + ":" + port;
         crdt = new CRDT(siteId, this);
         textEditor = new TextEditor(400, 400);
         textEditor.setTextEditorListener(this);
-        messenger = new Messenger(host, port, this);
+        messenger = new Messenger(host, port, this, peers);
     }
 
     @Override
