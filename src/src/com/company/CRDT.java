@@ -78,6 +78,7 @@ public class CRDT {
             return;
         }
         this.struct.remove(index);
+        this.controller.deleteToTextEditor(index);
         printString();
     }
 

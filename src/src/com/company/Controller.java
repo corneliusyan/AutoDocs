@@ -38,6 +38,10 @@ public class Controller implements TextEditorListener, MessengerListener {
         textEditor.getTextArea().setCaretPosition(curPos + 1);
     }
 
+    public void deleteToTextEditor(int index) {
+        textEditor.getTextArea().replaceRange("", index, index+1);
+    }
+
     @Override
     public void handleRemoteInsert(Char c, int count) {
         System.out.println("C O N T R O L L E R ===> handleRemoteInsert");
