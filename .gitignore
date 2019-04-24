@@ -1,5 +1,6 @@
 *.class
 .vscode/
-src/.idea
+src/.idea/
 .DS_Store
 src/out
+src/.idea/workspace.xml
