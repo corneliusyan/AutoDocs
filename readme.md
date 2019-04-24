@@ -17,6 +17,8 @@ Controller ini akan mendengarkan input operasi lokal dan remote. Jika terjadi op
 
 CRDT akan menghitung identifier untuk karakter baru tersebut tergantung remote atau lokal sekaligus menempatkan karakter di lokasi yang tepat di TextEditor.
 
+![alt text](arsitektur.png "Arsitektur Program")
+
 # CRDT
 CRDT pada program ini bertugas sebagai struktur data yang menampung list of character yang telah diberikan indentifier. CRDT menangani insert dan delete cara lokal maupun remote. CRDT memastikan bahwa insert dan delete yang terjadi bersifat komutatif dan idempoten. Jika terjadi konflik karena operasi lokal dan remote yang bersamaan, CRDT akan menyelesaikannya dengan hasil solusi yang sama untuk semua peer. Selain itu CRDT memberikan index yang tepat dari sebuah karakter jika index disusun secara linear dan memasukannya ke TextEditor. 
 
