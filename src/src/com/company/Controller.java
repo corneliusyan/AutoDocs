@@ -35,8 +35,12 @@ public class Controller implements TextEditorListener, MessengerListener {
 
     @Override
     public void onDelete(int index) {
+        System.out.println("[onDelete] START");
+        System.out.println("[onDelete] call localDelete");
         Char c = crdt.localDelete(index);
+        System.out.println("[onDelete] call broadCastDelete");
         this.messenger.broadcastDelete(c);
+        System.out.println("[onDelete] FINISH");
     }
 
     public void insertToTextEditor(char value, int index) {
@@ -48,11 +52,18 @@ public class Controller implements TextEditorListener, MessengerListener {
     }
 
     public void deleteToTextEditor(int index) {
+        System.out.println("[deleteToTextEditor] START");
+        System.out.println("[deleteToTextEditor] >> delete in editor at index = " + index);
         textEditor.getTextArea().replaceRange("", index, index + 1);
         int curPos = textEditor.getCursorPos();
         if (index <= curPos) {
-            textEditor.getTextArea().setCaretPosition(curPos - 1);
+            System.out.println("[deleteToTextEditor] >> cursorPos = " + curPos);
+            System.out.println("[deleteToTextEditor] >> setCaretPosition to " + (curPos - 1));
+//            textEditor.getTextArea().setCaretPosition(curPos - 1);
+            textEditor.getTextArea().setCaretPosition(0);
+            System.out.println("[deleteToTextEditor] >> after update, cursorPos = " + textEditor.getCursorPos());
         }
+        System.out.println("[deleteToTextEditor] FINISH");
     }
 
     @Override
@@ -66,22 +77,36 @@ public class Controller implements TextEditorListener, MessengerListener {
 
     @Override
     public void handleRemoteDelete(Char c) {
-        System.out.println("C O N T R O L L E R ===> handleRemoteDelete");
+        System.out.println("[handleRemoteDelete] START");
+        System.out.println("[handleRemoteDelete] >> preparing operation");
         Version operationVersion = new Version(c.getSiteId(), c.getCounter());
-        if (this.versionVector.hasBeenApplied(operationVersion)) return;
+        System.out.println("[handleRemoteDelete] >> check whether operation was already applied");
+//        if (this.versionVector.hasBeenApplied(operationVersion)) return;
         Operation operation = new Operation(c, "delete");
+        System.out.println("[handleRemoteDelete] >> add op to deletionBuffer");
         this.deletionBuffer.add(operation);
+        System.out.println("[handleRemoteDelete] >> call processDeletionBuffer");
         this.processDeletionBuffer();
+        System.out.println("[handleRemoteDelete] FINISH");
     }
 
     public void processDeletionBuffer() {
-        System.out.println(">>>>> processDeletionBuffer");
-        for (Operation op : this.deletionBuffer) {
+        System.out.println("[processDeletionBuffer] START");
+        int huyu = 0;
+        while (huyu < this.deletionBuffer.size()) {
+            System.out.println("[processDeletionBuffer] >> check index = " + huyu);
+            Operation op = this.deletionBuffer.get(huyu);
+            System.out.println("[processDeletionBuffer] >> value = " + op.getData().getValue() + ", counter = " + op.getData().getCounter());
+            System.out.println("[processDeletionBuffer] >> siteId = " + op.getData().getSiteId());
             if (this.hasInsertionBeenApplied(op)) {
                 Version operationVersion = new Version(op.getData().getSiteId(), op.getData().getCounter());
+                System.out.println("[processDeletionBuffer] >> currentCount = " + this.versionVector.getVersionFromVector(operationVersion).getCounter());
                 this.crdt.remoteDelete(op.getData());
                 this.versionVector.update(operationVersion);
                 this.deletionBuffer.remove(op);
+            } else {
+                System.out.println("[processDeletionBuffer] >>>> insertion hasn't been applied yet!");
+                huyu++;
             }
         }
     }

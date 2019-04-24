@@ -101,9 +101,14 @@ public class Messenger {
     }
 
     public void broadcastDelete(Char data) {
+        System.out.println("[broadcastDelete] START");
+        System.out.println("[broadcastDelete] >> preparing delete operation");
         Operation op = new Operation(data, "delete");
+        System.out.println("[broadcastDelete] >> jsonify operation");
         String payload = gson.toJson(op);
+        System.out.println("[broadcastDelete] call serverPeer->broadcast");
         this.serverPeer.broadcast(payload);
+        System.out.println("[broadcastDelete] FINISH");
     }
 
     public void handleRemoteInsert(Char data) {
